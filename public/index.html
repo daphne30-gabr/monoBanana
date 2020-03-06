@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.9.3/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.9.3/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.9.3/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.9.3/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.9.3/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+    <style>
+      body {
+        /* Rompe el flujo normal pasa poder hacer swipe hacia abajo. */
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        /* ocupa todo el espacio.*/
+        width: 100%;
+        height: 100%; 
+        /* Elimina márgenes. */
+        margin: 0;
+        /* Evita el scroll */
+        overflow: hidden;
+        background: black;
+        padding: 0px;
+      }
+
+      .figura {
+        position: absolute;
+        display: block;
+        font-size: 40px;
+       
+      }
+      .mono {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        top: 500px;
+        left: 250px;
+      }
+      img.puente{
+        width: 28px; height: 11px;
+      }
+
+      banana{
+        position: absolute;
+        font-size: 40px;
+        top: 15px; 
+        left: 300px;
+      }
+      figura-person {
+        position: absolute;
+        font-size: 50px;
+        transform: scaleX(-1);
+      }
+      #animation-rotate {
+        animation: rotate 3s infinite;
+        animation-name: rotate;
+        animation-duration: 5s;
+        animation-timing-function: ease;
+        animation-delay: 0s;
+        animation-iteration-count: infinite;
+        animation-direction: normal;
+        animation-fill-mode: none;
+        animation-play-state: running;
+      }
+      @keyframes rotate {
+        0%, 100% {
+          transform: rotate(15deg);
+        }
+        50% {
+          transform: rotate(-15deg);
+        }
+      }
+      footer {
+        position: relative;
+        margin-top: 550px;
+        height: 40px;
+        padding:5px 0px;
+        clear: both;
+        background: #286af0;
+        text-align: center;
+        color: #fff;
+      }
+
+    </style>
+    <script>
+      customElements.define("figura-person", class extends HTMLElement {
+        connectedCallback() {
+          this.innerHTML = "&#x1F3C3;";
+          this.x = 120;
+        }
+        muévete() {
+          let y = 110;
+          this.style.left = `${this.x}px`;
+          this.style.top = `${y}px`;
+          this.x = this.x > 800 ? 0 : this.x + 10;
+        }
+        muévetePiso2() {
+          let y = 240;
+          this.style.right = `${this.x}px`;
+          this.style.top = `${y}px`;
+          this.x = this.x > 1000 ? 0 : this.x + 10;
+        }
+        muévetePiso1() {
+          let y = 360;
+          this.style.left = `${this.x}px`;
+          this.style.top = `${y}px`;
+          this.x = this.x > 800 ? 0 : this.x + 10;
+        }
+        muévetePiso0() {
+          let y = 470;
+          this.style.right = `${this.x}px`;
+          this.style.top = `${y}px`;
+          this.x = this.x > 1100 ? 0 : this.x + 10;
+        }
+      });  
+      customElements.define("figura-monkey", class extends HTMLElement {
+        connectedCallback() {
+          this.classList.add("figura")
+          this.innerHTML += "&#x1F412;";
+          this.x = 0;
+          this.y = 470;
+        }
+        sube() {
+          if(this.y > 370 && this.y <= 470 && this.x == 700){
+            this.y -= 10;
+            this.muévete()
+          }
+          if(this.y > 250 && this.y <= 370 && this.x == 250){
+            this.y -= 10;
+            this.muévete()
+          }
+          if(this.y > 120 && this.y <= 250 && this.x == 550){
+            this.y -= 10;
+            this.muévete()
+          }
+          if(this.y > 0 && this.y <= 120 && this.x == 170){
+            this.y -= 10;
+            this.muévete()
+          }
+        }
+        baja() {
+          if(this.y >= 370 && this.y < 470 && this.x == 700){
+            this.y += 10;
+            this.muévete()
+          }
+          if(this.y >= 250 && this.y < 370 && this.x == 250){
+            this.y += 10;
+            this.muévete()
+          }
+          if(this.y >= 120 && this.y < 250 && this.x == 550){
+            this.y += 10;
+            this.muévete()
+          }
+          if(this.y >= 0 && this.y < 120 && this.x == 170){
+            this.y += 10;
+            this.muévete()
+          }
+        }
+        izquierda() {
+          if(this.x > 0 && this.x <= 1100 && this.y == 470){
+            this.x -= 10;
+            this.muévete()
+          } 
+          if(this.x > 0 && this.x <= 800 && this.y == 370){
+            this.x -= 10;
+            this.muévete()
+          } 
+          if(this.x > 200 && this.x <= 1100 && this.y == 250){
+            this.x -= 10;
+            this.muévete()
+          }      
+          if(this.x > 0 && this.x <= 800 && this.y == 120){
+            this.x -= 10;
+            this.muévete()
+          } 
+          if(this.x > 150 && this.x <= 480 && this.y == 30){
+            if(this.x == 300){
+              alert("You win...!");
+            }
+            this.x -= 10;
+            this.muévete()
+          }
+        }
+        derecha() {
+          if(this.x >= 0 && this.x < 1100 && this.y == 470){
+            this.x += 10;
+            this.muévete()
+          }
+          if(this.x >= 0 && this.x < 800 && this.y == 370){
+            this.x += 10;
+            this.muévete()
+          }
+          if(this.x >= 200 && this.x < 1050 && this.y == 250){
+            this.x += 10;
+            this.muévete()
+          }
+          if(this.x >= 0 && this.x < 800 && this.y == 120){
+            this.x += 10;
+            this.muévete()
+          }
+          if(this.x >= 150 && this.x < 480 && this.y == 30){
+            this.x += 10;
+            this.muévete()
+          }
+        }
+        muévete() {
+          this.style.left = `${this.x}px`;
+          this.style.top = `${this.y}px`;
+          var incr = 60;
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <script>
+			for(let x=200; x<500 ; x+=30){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: 70px; left: ${x}px;">
+          <img  width= "35px" height= "20px" src="puente.png">
+					  </div>`;
+			}
+      for(let x=10; x<800 ; x+=30){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: 170px; left: ${x}px;">
+          <img  width= "35px" height= "20px" src="puente.png">
+					  </div>`;
+			}
+      for(var x=200; x< 1100; x+=30){
+				document.body.innerHTML+=
+				`<div style="position:absolute;                                          
+				 top:300px;
+         left:${x}px;">
+        <img  width= "35px" height= "20px" src="puente.png">
+				</div>`;
+			}
+      for(var x=10; x< 800; x+=30){
+				document.body.innerHTML+=
+				`<div style="position:absolute;                                          
+				 top:420px;
+         left:${x}px;">
+        <img  width= "35px" height= "20px" src="puente.png">
+				</div>`;
+			}
+      for(let x=10; x<1100 ; x+=30){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: 520px; left: ${x}px;">
+          <img  width= "35px" height= "20px" src="puente.png">
+					  </div>`;
+			}
+    for(let x=180; x<300 ; x+=20){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:550px;">
+          <img  width= "28px" height= "24px" src="escalera.png">
+        </div>`;
+		}
+    for(let x=5; x<150 ; x+=20){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:170px;">
+          <img  width= "28px" height= "24px" src="escalera.png">
+        </div>`;
+		}
+    for(let x=420; x<520 ; x+=20){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:700px;">
+          <img  width= "28px" height= "24px" src="escalera.png">
+        </div>`;
+		}
+    for(let x=320; x<420 ; x+=20){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:250px;">
+          <img  width= "28px" height= "24px" src="escalera.png">
+        </div>`;
+		}
+    </script>
+    <banana id="animation-rotate">
+        &#x1F34C;
+    </banana>
+    <figura-person id="person"></figura-person>
+    <figura-person id="person1"></figura-person>
+    <figura-person id="person2"></figura-person>
+    <figura-monkey id="monkey" ></figura-monkey>
+
+    <footer>
+      <div>
+       <p>by: Daphne Gabriela Santiago Martinez</p>
+       <p>Contact information: <a href="192111001@alumnos.utn.edu.mx">192111001@alumnos.utn.edu.mx</a>.</p>
+    </footer>
+    
+    </div>
+   <script>
+      setInterval(() => person.muévete(), 120);
+      setInterval(() => person1.muévetePiso2(), 180);
+      setInterval(() => person2.muévetePiso1(), 200);
+      monkey.muévete();
+      document.addEventListener("keydown", evt => {
+        switch (evt.key) {
+          case "ArrowLeft":
+            monkey.izquierda();
+            break;
+          case "ArrowRight":
+            monkey.derecha();
+            break;
+          case "ArrowUp":
+            monkey.sube();
+            break;
+          case "ArrowDown":
+            monkey.baja();
+            break;
+        }
+      });
+      let iniciaX = null;
+      let iniciaY = null;
+      document.addEventListener('touchstart', evt => {
+        const toquInicial = evt.touches[0];
+        iniciaX = toquInicial.clientX;
+        iniciaY = toquInicial.clientY;
+      });
+      document.addEventListener('touchmove', evt => {
+        if (iniciaX && iniciaY) {
+          const mueve = evt.touches[0];
+          var mueveX = mueve.clientX;
+          var mueveY = mueve.clientY;
+          var difX = mueveX - iniciaX;
+          var difY = mueveY - iniciaY;
+          // Checa que el movimiento no sea muy corto,
+          if (Math.abs(difX) + Math.abs(difY) > 150) {
+            if (Math.abs(difX) > Math.abs(difY)) {
+              if (difX > 70) {
+                monkey.derecha();
+              } else {
+                monkey.izquierda();
+              }
+            } else if (difY > 70) {
+              monkey.baja();
+            } else {
+              monkey.sube();
+            }
+            // Reinicia valores.
+            iniciaX = null;
+            iniciaY = null;
+          }
+        }
+      });
+    </script>
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+        } catch (e) {
+          console.error(e);
+          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script>
+  </body>
+</html>
