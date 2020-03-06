@@ -3,17 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.9.3/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.9.3/firebase-auth.js"></script>
-    <script defer src="/__/firebase/7.9.3/firebase-database.js"></script>
-    <script defer src="/__/firebase/7.9.3/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/7.9.3/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+    <title>Juego</title>
     <style>
       body {
         /* Rompe el flujo normal pasa poder hacer swipe hacia abajo. */
@@ -57,7 +47,6 @@
       figura-person {
         position: absolute;
         font-size: 50px;
-        transform: scaleX(-1);
       }
       #animation-rotate {
         animation: rotate 3s infinite;
@@ -80,7 +69,7 @@
       }
       footer {
         position: relative;
-        margin-top: 550px;
+        margin-top: 520px;
         height: 40px;
         padding:5px 0px;
         clear: both;
@@ -95,18 +84,12 @@
         connectedCallback() {
           this.innerHTML = "&#x1F3C3;";
           this.x = 120;
-          
         }
         muévete() {
-          this.monos = Array.from(document.querySelectorAll("figura-monkey"));
           let y = 110;
           this.style.left = `${this.x}px`;
           this.style.top = `${y}px`;
           this.x = this.x > 800 ? 0 : this.x + 10;
-          for (const mono of this.monos) {
-            mono.izquierda(this.x, this.y);
-            mono.derecha(this.x, this.y);
-          }
         }
         muévetePiso2() {
           let y = 240;
@@ -120,6 +103,12 @@
           this.style.top = `${y}px`;
           this.x = this.x > 800 ? 0 : this.x + 10;
         }
+        muévetePiso0() {
+          let y = 470;
+          this.style.right = `${this.x}px`;
+          this.style.top = `${y}px`;
+          this.x = this.x > 1100 ? 0 : this.x + 10;
+        }
       });  
       customElements.define("figura-monkey", class extends HTMLElement {
         connectedCallback() {
@@ -129,94 +118,26 @@
           this.y = 470;
         }
         sube() {
-          if(this.y > 370 && this.y <= 470 && this.x == 700){
-            this.y -= 10;
-            this.muévete()
-          }
-          if(this.y > 250 && this.y <= 370 && this.x == 250){
-            this.y -= 10;
-            this.muévete()
-          }
-          if(this.y > 120 && this.y <= 250 && this.x == 550){
-            this.y -= 10;
-            this.muévete()
-          }
-          if(this.y > 0 && this.y <= 120 && this.x == 170){
+          if(this.y > 0 && this.y <= 470){
             this.y -= 10;
             this.muévete()
           }
         }
         baja() {
-          if(this.y >= 370 && this.y < 470 && this.x == 700){
-            this.y += 10;
-            this.muévete()
-          }
-          if(this.y >= 250 && this.y < 370 && this.x == 250){
-            this.y += 10;
-            this.muévete()
-          }
-          if(this.y >= 120 && this.y < 250 && this.x == 550){
-            this.y += 10;
-            this.muévete()
-          }
-          if(this.y >= 0 && this.y < 120 && this.x == 170){
+          if(this.y >= 0 && this.y < 470){
             this.y += 10;
             this.muévete()
           }
         }
-        izquierda(a,b) {
-          if(this.x > 0 && this.x <= 1100 && this.y == 470){
+        izquierda() {
+          if(this.x > 0 && this.x <= 1300){
             this.x -= 10;
             this.muévete()
-          } 
-          if(this.x > 0 && this.x <= 800 && this.y == 370){
-            this.x -= 10;
-            this.muévete()
-          } 
-          if(this.x > 200 && this.x <= 1100 && this.y == 250){
-            this.x -= 10;
-            this.muévete()
-          }      
-          if(this.x > 0 && this.x <= 800 && this.y == 120){
-            this.x -= 10;
-            this.muévete()
-            if(a == this.x){
-              alert("You Lose...");
-            }
-          }
-          if(this.x > 150 && this.x <= 480 && this.y == 30){
-            if(this.x == 300){
-              alert("You win...!");
-            }
-            this.x -= 10;
-            this.muévete()
-          }
+          }          
         }
-        derecha(a, b) {
-          if(this.x >= 0 && this.x < 1100 && this.y == 470){
+        derecha() {
+          if(this.x >= 0 && this.x < 1300){
             this.x += 10;
-            this.muévete()
-          }
-          if(this.x >= 0 && this.x < 800 && this.y == 370){
-            this.x += 10;
-            this.muévete()
-          }
-          if(this.x >= 200 && this.x < 1050 && this.y == 250){
-            this.x += 10;
-            this.muévete()
-          }
-          if(this.x >= 0 && this.x < 800 && this.y == 120){
-            this.x += 10;
-            this.muévete()
-            if(a == this.x){
-              alert("You Lose...");
-            }
-          }
-          if(this.x >= 150 && this.x < 480 && this.y == 30){
-            this.x += 10;
-            if(this.x == 300){
-              alert("You win...!");
-            }
             this.muévete()
           }
         }
@@ -261,27 +182,20 @@
           <img  width= "35px" height= "20px" src="puente.png">
 					  </div>`;
 			}
-    for(let x=180; x<300 ; x+=20){
-				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:550px;">
-          <img  width= "28px" height= "24px" src="escalera.png">
-        </div>`;
-		}
-    for(let x=5; x<150 ; x+=20){
-				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:170px;">
-          <img  width= "28px" height= "24px" src="escalera.png">
-        </div>`;
-		}
-    for(let x=420; x<520 ; x+=20){
-				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:700px;">
-          <img  width= "28px" height= "24px" src="escalera.png">
-        </div>`;
-		}
-    for(let x=320; x<420 ; x+=20){
+    for(let x=200; x<340 ; x+=20){
 				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:250px;">
           <img  width= "28px" height= "24px" src="escalera.png">
         </div>`;
 		}
+    for(let x=5; x<170 ; x+=20){
+				document.body.innerHTML += `<div id="figura" style="position: absolute; top: ${x}px; left:170px;">
+          <img  width= "28px" height= "24px" src="escalera.png">
+        </div>`;
+		}
     </script>
+      <div id="figura" style="position: absolute; top: 500px; left:200px;">
+        <img  width= "28px" height= "24px" src="escalera.png">
+      </div>;
     <banana id="animation-rotate">
         &#x1F34C;
     </banana>
@@ -349,30 +263,6 @@
             iniciaX = null;
             iniciaY = null;
           }
-        }
-      });
-    </script>
-
-    <script>
-
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
         }
       });
     </script>
